@@ -516,7 +516,6 @@ def index():
             cursor: pointer;
             transition: color 0.2s ease;
         }
-
         .modal-close:hover {
             color: var(--accent-purple);
         }
@@ -623,7 +622,7 @@ def index():
     </div>
 
     <footer>
-        <p>&copy; 2026 YouTube Frame & Subtitle Extractor — Pair Programming com Antigravity</p>
+        <p>&copy; 2026 YouTube Frame & Subtitle Extractor</p>
     </footer>
 
     <script>
