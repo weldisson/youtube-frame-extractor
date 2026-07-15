@@ -51,12 +51,12 @@ def process_video_job(job_id: str, url: str, interval: float, lang: str):
     try:
         # Download video
         job["status"] = "downloading"
-        job["message"] = "Baixando o vídeo do YouTube..."
+        job["message"] = "Downloading YouTube video..."
         job["progress"] = 15.0
         video_path = download_video(url, job_dir)
         
         # Download subtitles
-        job["message"] = "Buscando legendas..."
+        job["message"] = "Retrieving subtitles..."
         job["progress"] = 35.0
         srt_path = None
         
@@ -75,15 +75,15 @@ def process_video_job(job_id: str, url: str, interval: float, lang: str):
         # Parse subtitles
         srt_entries = []
         if srt_path:
-            job["message"] = "Processando as legendas..."
+            job["message"] = "Processing subtitles..."
             job["progress"] = 50.0
             srt_entries = parse_srt(srt_path)
         else:
-            job["message"] = "Nenhuma legenda encontrada. Continuando sem legendas..."
+            job["message"] = "No subtitles found. Continuing without subtitles..."
             job["progress"] = 50.0
             
         # Extract frames & draw subtitles
-        job["message"] = "Extraindo frames e desenhando legendas..."
+        job["message"] = "Extracting frames and rendering subtitles..."
         job["progress"] = 60.0
         generated_frames = extract_frames(video_path, interval, frames_dir, srt_entries)
         
@@ -94,7 +94,7 @@ def process_video_job(job_id: str, url: str, interval: float, lang: str):
             except Exception:
                 pass
                 
-        job["message"] = "Empacotando os frames..."
+        job["message"] = "Packaging frames..."
         job["progress"] = 85.0
         
         # Generate metadata.json
@@ -122,14 +122,14 @@ def process_video_job(job_id: str, url: str, interval: float, lang: str):
         
         # Update job database
         job["status"] = "completed"
-        job["message"] = "Processamento concluído com sucesso!"
+        job["message"] = "Processing completed successfully!"
         job["progress"] = 100.0
         job["zip_url"] = f"/outputs/{job_id}/bundle.zip"
         job["frames"] = metadata["frames"]
         
     except Exception as e:
         job["status"] = "failed"
-        job["message"] = f"Erro: {str(e)}"
+        job["message"] = f"Error: {str(e)}"
         job["progress"] = 100.0
 
 
@@ -143,7 +143,7 @@ def start_processing(request: ProcessRequest, background_tasks: BackgroundTasks)
     job_id = str(uuid.uuid4())
     JOBS[job_id] = {
         "status": "queued",
-        "message": "Enfileirando trabalho...",
+        "message": "Queueing job...",
         "progress": 0.0,
         "zip_url": None,
         "frames": []
@@ -169,7 +169,7 @@ def get_status(job_id: str):
 def index():
     return """
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -516,6 +516,7 @@ def index():
             cursor: pointer;
             transition: color 0.2s ease;
         }
+
         .modal-close:hover {
             color: var(--accent-purple);
         }
@@ -561,38 +562,38 @@ def index():
 <body>
     <header>
         <h1>YouTube Frame Extractor</h1>
-        <p>Extraia frames com legendas embutidas com precisão</p>
+        <p>Extract video frames with embedded subtitles precisely</p>
     </header>
 
     <main>
         <div class="card">
             <div class="form-group">
-                <label for="video-url">URL do Vídeo do YouTube</label>
+                <label for="video-url">YouTube Video URL</label>
                 <input type="text" id="video-url" placeholder="https://www.youtube.com/watch?v=..." value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
             </div>
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="interval">Intervalo de extração (segundos)</label>
+                    <label for="interval">Extraction Interval (seconds)</label>
                     <input type="number" id="interval" min="0.1" step="0.1" value="1.0">
                 </div>
                 <div class="form-group">
-                    <label for="lang">Idioma das Legendas</label>
+                    <label for="lang">Subtitle Language</label>
                     <select id="lang">
-                        <option value="pt">Português</option>
-                        <option value="en">Inglês</option>
+                        <option value="pt">Portuguese</option>
+                        <option value="en">English</option>
                     </select>
                 </div>
             </div>
 
             <button id="btn-process" class="btn-primary" onclick="startProcess()">
-                <span>Processar Vídeo</span>
+                <span>Process Video</span>
             </button>
         </div>
 
         <div id="card-progress" class="card progress-container">
             <div class="progress-text">
-                <span id="progress-message" class="progress-msg">Iniciando...</span>
+                <span id="progress-message" class="progress-msg">Initializing...</span>
                 <span id="progress-percentage" class="progress-pct">0%</span>
             </div>
             <div class="progress-bar-bg">
@@ -602,10 +603,10 @@ def index():
 
         <div id="gallery-wrapper" class="gallery-container">
             <div class="gallery-header">
-                <h2>Frames Extraídos</h2>
+                <h2>Extracted Frames</h2>
                 <a id="btn-zip-download" href="#" class="btn-download" download>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Baixar Pacote ZIP
+                    Download ZIP Package
                 </a>
             </div>
             <div id="gallery-grid" class="gallery-grid"></div>
@@ -634,18 +635,18 @@ def index():
             const lang = document.getElementById("lang").value;
 
             if (!url) {
-                alert("Por favor, insira uma URL de vídeo válida.");
+                alert("Please enter a valid YouTube URL.");
                 return;
             }
 
             const btn = document.getElementById("btn-process");
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> <span>Processando...</span>';
+            btn.innerHTML = '<span class="spinner"></span> <span>Processing...</span>';
 
             // Show progress block
             const progressCard = document.getElementById("card-progress");
             progressCard.style.display = "flex";
-            updateProgress("Iniciando processo...", 5);
+            updateProgress("Starting process...", 5);
 
             // Hide previous gallery
             document.getElementById("gallery-wrapper").style.display = "none";
@@ -659,7 +660,7 @@ def index():
                 body: JSON.stringify({ url, interval, lang })
             })
             .then(res => {
-                if (!res.ok) throw new Error("Erro ao iniciar processamento.");
+                if (!res.ok) throw new Error("Error starting video processing.");
                 return res.json();
             })
             .then(data => {
@@ -686,12 +687,12 @@ def index():
                     resetButton();
                 } else if (data.status === "failed") {
                     clearInterval(pollInterval);
-                    alert("O processamento falhou: " + data.message);
+                    alert("Processing failed: " + data.message);
                     resetButton();
                 }
             })
             .catch(err => {
-                console.error("Erro no polling:", err);
+                console.error("Polling error:", err);
             });
         }
 
@@ -704,7 +705,7 @@ def index():
         function resetButton() {
             const btn = document.getElementById("btn-process");
             btn.disabled = false;
-            btn.innerHTML = '<span>Processar Vídeo</span>';
+            btn.innerHTML = '<span>Process Video</span>';
         }
 
         function showGallery(frames, zipUrl) {
@@ -712,13 +713,13 @@ def index():
             grid.innerHTML = "";
 
             if (!frames || frames.length === 0) {
-                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted);'>Nenhum frame extraído.</p>";
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted);'>No frames extracted.</p>";
             } else {
                 frames.forEach(frame => {
                     const item = document.createElement("div");
                     item.className = "gallery-item";
                     
-                    const capText = frame.subtitle ? frame.subtitle : "Sem legenda";
+                    const capText = frame.subtitle ? frame.subtitle : "No subtitle";
                     
                     item.innerHTML = `
                         <div class="gallery-img-container">
