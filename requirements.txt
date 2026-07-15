@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+httpx
+pytest
+opencv-python
+numpy
+yt-dlp
+youtube-transcript-api

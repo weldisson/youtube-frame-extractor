@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache and testing
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.pytest/
+
+# OS specific files
+.DS_Store
+
+# Project specific outputs (so you don't push downloaded videos/images)
+outputs/
+scratch_outputs/
+scratch/
+
+# Agent configuration/logs
+.agents/
