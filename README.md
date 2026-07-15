@@ -1,73 +1,73 @@
 # YouTube Frame & Subtitle Extractor 🎥🖼️
 
-Uma aplicação web local moderna (Backend em Python/FastAPI e Frontend em HTML/JS com Glassmorphism) que permite extrair frames de qualquer vídeo do YouTube em intervalos de tempo personalizados (ex: de 1 em 1 segundo, etc.), desenhar a legenda correspondente na imagem e baixar tudo em um pacote ZIP comprimido.
+A modern local web application (Python/FastAPI backend + Glassmorphism HTML/JS frontend) that allows you to extract frames from any YouTube video at custom intervals (e.g., every 1 second, 1.5s, 5s, etc.), draw the active subtitle/caption text directly onto the image, and download them bundled in a compressed ZIP file.
 
-Esta aplicação foi desenvolvida e otimizada para contornar as restrições e bloqueios recentes do YouTube (como erros HTTP 403 Forbidden e "The page needs to be reloaded") através de técnicas de spoofing de player (Android client emulation) e fallback dinâmico de legendas.
-
----
-
-## ✨ Funcionalidades
-
-- **Extração Customizável:** Extraia frames com intervalos de tempo precisos (ex: a cada 1 segundo, 1.5s, 5s, etc.).
-- **Legendas Embutidas:** O app busca a legenda ativa em cada frame e a desenha na parte inferior com fundo semi-transparente para máxima legibilidade.
-- **Nomenclatura Inteligente:** Os arquivos de imagem são salvos no formato `{tempo_segundos}s_{legenda_sanitizada}.jpg` para fácil identificação.
-- **Interface Premium:** Frontend moderno com tema escuro (Dark Mode), efeito Glassmorphism, barra de progresso em tempo real, galeria responsiva com visualizador individual (Lightbox) e botão de download do ZIP completo.
-- **Performance Otimizada:** Exclusão automática do vídeo original em disco após a extração dos frames para poupar espaço de armazenamento.
+This application has been developed and optimized to bypass recent YouTube download restrictions (such as HTTP Error 403: Forbidden and "The page needs to be reloaded") using player-client spoofing (Android client emulation) and robust transcript fetching logic.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## ✨ Features
 
-- **Backend:** Python 3.9+, FastAPI, Uvicorn, OpenCV (extração de frames), Pillow/numpy.
-- **Downloader Engine:** `yt-dlp` (com spoofing do player Android) e `youtube-transcript-api`.
-- **Frontend:** HTML5, Vanilla CSS3 (com Glassmorphism e animações fluidas), JavaScript (ES6).
+- **Custom Extraction Interval:** Extract frames at precise intervals (e.g., every 1.0s, 1.5s, 5s, etc.).
+- **Embedded Captions:** The app retrieves the active subtitle at each frame's timestamp and renders it at the bottom of the image with a translucent black background for maximum legibility.
+- **Smart File Naming:** Frames are saved as `{timestamp_seconds}s_{sanitized_subtitle}.jpg` for easy reference.
+- **Optimized Storage:** The original video file is automatically deleted from the server once frame extraction completes to save disk space.
+- **Premium Interface:** A modern, responsive Dark Mode UI featuring Glassmorphism, real-time progress updates (downloading, extracting, packaging), a gallery grid, lightbox previews, and a ZIP download button.
 
 ---
 
-## 🚀 Como Executar o App Localmente
+## 🛠️ Tech Stack
 
-### Pré-requisitos
-Certifique-se de ter o Python 3.9+ instalado no seu computador.
+- **Backend:** Python 3.9+, FastAPI, Uvicorn, OpenCV (for frame extraction and caption rendering), Pillow/numpy.
+- **Download Engine:** `yt-dlp` (configured with Android player client spoofing) and `youtube-transcript-api`.
+- **Frontend:** HTML5, CSS3 (with Glassmorphic elements and fluid transitions), JavaScript (ES6).
 
-### Passo 1: Entrar no diretório do projeto
-Abra o seu terminal e navegue até a pasta do projeto:
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+Make sure you have Python 3.9+ installed on your system.
+
+### Step 1: Navigate to the project directory
+Open your terminal and run:
 ```bash
 cd /Users/weldissonaraujo/.gemini/antigravity/scratch/youtube_frame_extractor
 ```
 
-### Passo 2: Iniciar a aplicação
-O projeto já conta com um script automatizado que ativa o ambiente virtual (`venv`) e inicializa o servidor de forma limpa:
+### Step 2: Start the application
+The project includes a startup script that activates the virtual environment (`venv`) and boots up the FastAPI server:
 ```bash
 ./start.sh
 ```
 
-### Passo 3: Acessar no Navegador
-Abra o seu navegador de preferência e acesse:
+### Step 3: Access the Web UI
+Open your browser and navigate to:
 👉 **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```text
 youtube_frame_extractor/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py          # Endpoints do FastAPI e HTML do Frontend
-│   ├── downloader.py    # Gerenciador de downloads do YouTube e legendas
-│   ├── processor.py     # Motor de extração de frames, desenho de legenda e ZIP
-│   └── exceptions.py    # Exceções customizadas
-├── tests/               # Conjunto de testes E2E e mocks offline
-├── requirements.txt     # Dependências do projeto
-├── start.sh             # Script de inicialização automática
-├── .gitignore           # Evita o envio de vídeos, imagens e caches para o Git
-└── README.md            # Documentação do projeto
+│   ├── main.py          # FastAPI endpoints & Frontend HTML page
+│   ├── downloader.py    # Downloads YouTube video and transcript streams
+│   ├── processor.py     # Frame extraction, subtitle drawing & ZIP creation
+│   └── exceptions.py    # Custom application exceptions
+├── tests/               # E2E integration test suite & mock assets
+├── requirements.txt     # Python dependencies
+├── start.sh             # Automatic server startup script
+├── .gitignore           # Prevents uploading local cache/videos to Git
+└── README.md            # Project documentation
 ```
 
 ---
 
-## 🧪 Rodando os Testes E2E (Offline)
-Para rodar a suíte de testes integrada offline do projeto:
+## 🧪 Running E2E Tests (Offline)
+To run the integrated offline test suite:
 ```bash
 ./venv/bin/python tests/test_runner.py
 ```
